@@ -1,11 +1,25 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { Todo } = require('./models');
+const path = require('path');
 
 const app = express();
 app.use(bodyParser.json());
 
-app.get("/", (request, response) => {
+app.set("view engine", "ejs");
+
+app.get("/",async (request, response) => {
+    const allTodos = await Todo.getAllTodos();
+if(request.accepts("html")){
+    response.render("index",{allTodos});
+
+}else{
+    response.json({allTodos})
+}
+    
+})
+app.use(express.static(path.join(__dirname, "public")));
+app.get("/todos", (request, response) => {
     response.send("Hello World");
 });
 
@@ -54,9 +68,5 @@ app.put("/todos/:id/markAsComplete", async (request, response) => {
     }
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
 
 module.exports = app; // Export the app for testing

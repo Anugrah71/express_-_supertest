@@ -19,6 +19,9 @@ module.exports = (sequelize, DataTypes) => {
     markAsComplete(){
       return this.update({completed:true})
     }
+    static getAllTodos(){
+      return this.findAll()
+    }
   }
   Todo.init({
     title: DataTypes.STRING,
