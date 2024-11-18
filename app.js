@@ -11,10 +11,16 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const { Todo } = require("./models");
 
-app.get("/", (request, response) => {
-  response.render("index"); // index refers to index.ejs
+// Root route to render index.ejs with todos
+app.get("/", async (request, response) => {
+  try {
+    const allTodos = await Todo.findAll(); // Fetch all todos from the database
+    response.render("index", { allTodos }); // Pass todos to the template
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+    response.status(500).send("Internal Server Error");
+  }
 });
-
 // eslint-disable-next-line no-unused-vars
 app.get("/todos", (request, response) => {
   console.log("Todo list");
