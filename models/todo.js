@@ -22,6 +22,14 @@ module.exports = (sequelize, DataTypes) => {
     static getAllTodos(){
       return this.findAll()
     }
+    async DeleteTodoById() {
+      // Use this instance to delete
+      await this.destroy();
+      return { id: this.id, message: "Todo deleted successfully" };
+    }
+    
+    
+
   }
   Todo.init({
     title: DataTypes.STRING,
