@@ -23,10 +23,19 @@ app.get("/", async (request, response) => {
 });
 
 // eslint-disable-next-line no-unused-vars
-app.get("/todos", (request, response) => {
+// send all todo to the client
+app.get("/todos", async(request, response) => {
   console.log("Todo list");
+  try{
+    const allTodos = await Todo.getAllTodos();
+    response.status(200).json(allTodos);
+  }catch(error){
+    console.error(error);
+    response.status(500).json({error:"Internal Server Error"});
+  }
 });
 
+//create a new todo
 app.post("/todos", async (request, response) => {
   console.log("Creating a todo", request.body);
   try {
@@ -43,14 +52,13 @@ app.post("/todos", async (request, response) => {
 
 
 // PUT http://mytodoapp.com/todos/123/markAsCompleted
+// Mark a todo as completed
 app.put("/todos/:id/markAsCompleted", async (request, response) => {
   console.log("We have to update a todo with ID:", request.params.id);
   const todo = await Todo.findByPk(request.params.id);
-  
   if (!todo) {
-    return response.status(404).json({ error: "Todo not found" });
+    return response.status(404).json({ message: "Todo not found" });
   }
-
   try {
     const updatedTodo = await todo.markAsCompleted();
     return response.json(updatedTodo);
@@ -60,18 +68,16 @@ app.put("/todos/:id/markAsCompleted", async (request, response) => {
   }
 });
 
-// eslint-disable-next-line no-unused-vars
-app.delete("/todos/:id", (request, response) => {
-  console.log("Delete a todo by ID: ", request.params.id);
-});
+
 
 //deleting todo by id
 app.delete("/todos/:id/DeleteTodoById", async (request, response) => {
-  console.log("We have to delete a todo with ID:", request.params.id);
+  console.log("Deleting Todo with ID:", request.params.id);
 
   try {
     // Find the specific todo by ID
     const todo = await Todo.findByPk(request.params.id);
+    console.log("Found Todo:", todo);
 
     if (!todo) {
       return response.status(404).json({ message: "Todo not found" });
@@ -85,6 +91,7 @@ app.delete("/todos/:id/DeleteTodoById", async (request, response) => {
     return response.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 
 
