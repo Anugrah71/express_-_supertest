@@ -1,0 +1,19 @@
+<div class="container">
+    <table>
+      <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Duedate</th>
+        <th>MarkAsComplete</th>
+      </tr>
+      <!-- Loop through the array of todos -->
+      <% for (var i = 0; i < allTodos.length; i++) { %>
+      <tr>
+        <td><%= allTodos[i].id %></td>
+        <td><%= allTodos[i].title %></td>
+        <td><%= allTodos[i].dueDate %></td>
+        <td><%= allTodos[i].completed %></td>
+      </tr>
+      <% } %>
+    </table>
+  </div>
