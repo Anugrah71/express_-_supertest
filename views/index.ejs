@@ -1,21 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Todo App</title>
-    <link rel="stylesheet" href="./css/stylee.css">
-
-</head>
-<body>
-    <%- include('header.ejs') %>
-    <table>
-        <% for(var i =0;i < allTodos.length; i++) { %>
-       
+    <link rel="stylesheet" href="./css/stylee.css" />
+    <style>
+      table,
+      th,
+      td {
+        border: 1px solid black;
+      }
+      table {
+        width: 100%;
+        height: 100%;
+      }
+      body {
+        display: grid;
+        place-items: center;
+        background-color: #a3bcf9;
+      }
+      .container {
+        border: 1px solid black;
+        width: 1200px;
+        height: 600px;
+        margin-top: 30px;
+        background-color: #d1d2f9;
+        box-shadow: 19px 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('header.ejs') %> <!-- Include a reusable header -->
+    
+    <div class="container">
+      <table>
         <tr>
-            <td><%= allTodos[i].title %></td>
+          <th>Id</th>
+          <th>Title</th>
+          <th>Duedate</th>
+          <th>MarkAsComplete</th>
+        </tr>
+        <!-- Loop through the array of todos -->
+        <% for (var i = 0; i < allTodos.length; i++) { %>
+        <tr>
+          <td><%= allTodos[i].id %></td>
+          <td><%= allTodos[i].title %></td>
+          <td><%= allTodos[i].dueDate %></td>
+          <td><%= allTodos[i].completed %></td>
         </tr>
         <% } %>
-    </table>
-</body>
+      </table>
+    </div>
+  </body>
 </html>
