@@ -21,6 +21,7 @@ app.get("/", async (request, response) => {
     response.status(500).send("Internal Server Error");
   }
 });
+
 // eslint-disable-next-line no-unused-vars
 app.get("/todos", (request, response) => {
   console.log("Todo list");
@@ -40,6 +41,7 @@ app.post("/todos", async (request, response) => {
   }
 });
 
+
 // PUT http://mytodoapp.com/todos/123/markAsCompleted
 app.put("/todos/:id/markAsCompleted", async (request, response) => {
   console.log("We have to update a todo with ID:", request.params.id);
@@ -57,5 +59,28 @@ app.put("/todos/:id/markAsCompleted", async (request, response) => {
 app.delete("/todos/:id", (request, response) => {
   console.log("Delete a todo by ID: ", request.params.id);
 });
+
+//deleting todo by id
+app.delete("/todos/:id/DeleteTodoById", async (request, response) => {
+  console.log("We have to delete a todo with ID:", request.params.id);
+
+  try {
+    // Find the specific todo by ID
+    const todo = await Todo.findByPk(request.params.id);
+
+    if (!todo) {
+      return response.status(404).json({ message: "Todo not found" });
+    }
+
+    // Call the instance method to delete the todo
+    const result = await todo.DeleteTodoById();
+    return response.json(result);
+  } catch (error) {
+    console.error("Error deleting todo:", error.message);
+    return response.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 
 module.exports = app;
