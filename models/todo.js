@@ -16,9 +16,10 @@ module.exports = (sequelize, DataTypes) => {
     static addTodo ({title, dueDate}){
       return this.create({title:title, dueDate:dueDate ,completed:false})
     }
-    markAsComplete(){
-      return this.update({completed:true})
+    markAsCompleted() {
+      return this.update({ completed: true });
     }
+    
     static getAllTodos(){
       return this.findAll()
     }
