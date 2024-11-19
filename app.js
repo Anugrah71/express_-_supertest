@@ -46,6 +46,11 @@ app.post("/todos", async (request, response) => {
 app.put("/todos/:id/markAsCompleted", async (request, response) => {
   console.log("We have to update a todo with ID:", request.params.id);
   const todo = await Todo.findByPk(request.params.id);
+  
+  if (!todo) {
+    return response.status(404).json({ error: "Todo not found" });
+  }
+
   try {
     const updatedTodo = await todo.markAsCompleted();
     return response.json(updatedTodo);
