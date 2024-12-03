@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const path = require('path');
+const path = require("path");
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
 
 // Set EJS as view engine
 app.set("view engine", "ejs");
@@ -15,8 +16,34 @@ const { Todo } = require("./models");
 app.get("/", async (request, response) => {
   try {
     const allTodos = await Todo.findAll(); // Fetch all todos from the database
-    response.render("index", { allTodos }); // Pass todos to the template
-  } catch (error) {
+
+    // Get today's date
+    const today = new Date().toISOString().split("T")[0];
+
+    // Categorize todos
+    const overdue = allTodos.filter((todo) => todo.dueDate < today);
+    const dueToday = allTodos.filter((todo) => todo.dueDate === today);
+    const dueLater = allTodos.filter((todo) => todo.dueDate > today);
+    let overcount = overdue.length;
+    let duetocount = dueToday.length;
+    let duelatecount = dueLater.length;
+    if(request.accepts("html")){ 
+    response.render("index", {
+      overdue,
+      dueToday,
+      dueLater,
+      overcount,
+      duetocount,
+      duelatecount,
+      
+    });
+   }else{
+    response.json({
+      overdue,
+      dueToday,
+      dueLater,
+    })
+  }} catch (error) {
     console.error("Error fetching todos:", error);
     response.status(500).send("Internal Server Error");
   }
@@ -24,14 +51,14 @@ app.get("/", async (request, response) => {
 
 // eslint-disable-next-line no-unused-vars
 // send all todo to the client
-app.get("/todos", async(request, response) => {
+app.get("/todos", async (request, response) => {
   console.log("Todo list");
-  try{
+  try {
     const allTodos = await Todo.getAllTodos();
     response.status(200).json(allTodos);
-  }catch(error){
+  } catch (error) {
     console.error(error);
-    response.status(500).json({error:"Internal Server Error"});
+    response.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -43,13 +70,12 @@ app.post("/todos", async (request, response) => {
       title: request.body.title,
       dueDate: request.body.dueDate,
     });
-    return response.json(todo);
+    return response.redirect("/");
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
   }
 });
-
 
 // PUT http://mytodoapp.com/todos/123/markAsCompleted
 // Mark a todo as completed
@@ -68,32 +94,16 @@ app.put("/todos/:id/markAsCompleted", async (request, response) => {
   }
 });
 
-
-
 //deleting todo by id
-app.delete("/todos/:id/DeleteTodoById", async (request, response) => {
+app.delete("/todos/:id", async (request, response) => {
   console.log("Deleting Todo with ID:", request.params.id);
 
   try {
-    // Find the specific todo by ID
-    const todo = await Todo.findByPk(request.params.id);
-    console.log("Found Todo:", todo);
-
-    if (!todo) {
-      return response.status(404).json({ message: "Todo not found" });
-    }
-
-    // Call the instance method to delete the todo
-    const result = await todo.DeleteTodoById();
-    return response.json(result);
+    await Todo.remove(request.params.id);
+    return response.json(true);
   } catch (error) {
-    console.error("Error deleting todo:", error.message);
-    return response.status(500).json({ error: "Internal Server Error" });
+    return response.status(422).json(error);
   }
 });
-
-
-
-
 
 module.exports = app;

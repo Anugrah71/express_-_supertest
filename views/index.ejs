@@ -3,18 +3,77 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Todo App</title>
+    <title>Todo Manager</title>
     <link rel="stylesheet" href="./css/stylee.css" />
-    <style>
-      
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      function updateTodo(id) {
+        fetch(`/todos/${id}/markAsCompleted`, {
+          method: "put",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload();
+            }
+          })
+
+          .catch((err) => console.error(err));
+      }
+      function deleteTodo(id) {
+        fetch(`/todos/${id}`, {
+          method: "delete",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload();
+            }
+          })
+
+          .catch((err) => console.error(err));
+      }
+    </script>
   </head>
   <body>
-    <%- include('header.ejs') %> <!-- Include a reusable header -->
-    <%- include('todo.ejs') %> <!-- Include a reusable header -->
-    <%- include('footer.ejs') %> <!-- Include a reusable header -->
-   
-    
-    
+    <div class="grid grid-cols-6">
+      <div class="col-start-3 col-span-2">
+        <%- include('header.ejs') %>
+        <form action="/todos" method="post">
+          <div class="flex gap-2 py-4">
+            <div class="flex-auto">
+              <input
+                type="text"
+                name="title"
+                placeholder="What's Next?"
+                class="border border-gray-300 text-sm rounded p-2 text-gray-900 w-full"
+                required
+              />
+            </div>
+            <div class="flex-auto">
+              <input
+                type="date"
+                name="dueDate"
+                class="border border-gray-300 text-sm rounded p-2 text-gray-900 w-full leading-4"
+                required
+              />
+            </div>
+            <div class="flex-none">
+              <button
+                type="submit"
+                class="bg-green-600 text-white px-5 py-1.5 rounded font-medium mr-2 mb-2"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </form>
+        <div><%- include('todo.ejs') %></div>
+      </div>
+    </div>
   </body>
 </html>
