@@ -1,1 +1,1 @@
-cd todo-app && npm index.js
+npm index.js
