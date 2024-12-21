@@ -16,9 +16,9 @@
   "production": {
     "use_env_variable": "DATABASE_URL",
     "dialect": "postgres",
-     "username": "postgres",
-  "password": "Anugrah71",
-  "database": "wd-todo-production",
-  "host": "10.221.122.155",
+    "username": "postgres",
+    "password": "Anugrah71",
+    "database": "wd-todo-production",
+    "host": "10.221.122.155"
   }
 }
